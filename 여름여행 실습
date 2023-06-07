@@ -1,0 +1,86 @@
+from bs4 import BeautifulSoup     
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
+import sys
+
+keyword = "여름여행"
+f_name = r"C:/Users/rl/Desktop/py/sumt.txt"
+fc_name = r"C:/Users/rl/Desktop/py/sumc.csv"
+fx_name = r"C:/Users/rl/Desktop/py/sumx.xlsx"
+
+path = "C:/Users/rl/Desktop/py/chromedriver_win32/chromedriver.exe"
+driver = webdriver.Chrome(path)
+
+driver.get("https://www.naver.com")
+time.sleep(2)
+
+search_bar = driver.find_element(By.ID,"query")
+search_bar.send_keys(keyword)
+
+driver.find_element(By.ID,'search-btn').click()
+time.sleep(1)
+
+driver.find_element(By.LINK_TEXT,'VIEW').click()
+time.sleep(1)
+
+driver.find_element(By.LINK_TEXT,'블로그').click()
+time.sleep(1)
+
+# Step 4. 현재 페이지에 있는 내용을 화면에 출력하기
+time.sleep(1)
+
+all_html = driver.page_source
+soup = BeautifulSoup(all_html, 'html.parser')
+content_list = soup.find('ul',class_='lst_total')
+num = 0
+nick_name2 =[ ]
+date2 =[ ]
+title2 =[ ]
+content2 =[ ]
+
+for i in content_list.find_all("li", "bx"):
+    nick_name = i.find('a','sub_txt sub_name').get_text( )
+    nick_name2.append(nick_name)
+    print('닉네임:',nick_name.strip())
+    
+    date = i.find('span','sub_time sub_txt').get_text()
+    date2.append(date)
+    print('날짜:',date.strip())
+   
+    title = i.find('a','api_txt_lines total_tit').get_text()
+    title2.append(title)
+    print('제목:',title.strip())
+    
+    content = i.find('div','api_txt_lines dsc_txt').get_text()
+    content2.append(content)
+    print('내용:',content.strip())
+    num+=1
+    if num == 10:
+        break
+
+import pandas as pd
+
+dongseo_blog = pd.DataFrame()
+dongseo_blog['닉네임']=nick_name2
+dongseo_blog['날짜']=date2
+dongseo_blog['제목']=title2
+dongseo_blog['내용']=content2
+
+# csv 형태로 저장하기
+dongseo_blog.to_csv(fc_name, encoding="utf-8-sig")
+print(" csv 파일 저장 경로: %s" %fc_name)
+
+# 엑셀 형태로 저장하기
+import xlwt   
+dongseo_blog.to_excel(fx_name)
+print(" xls 파일 저장 경로: %s" %fx_name)
+
+# 출력 결과를 txt 파일로 저장하기
+f = open(f_name, 'a',encoding='UTF-8')
+f.write(str(nick_name2))
+f.write(str(date2))
+f.write(str(title2))
+f.write(str(content2))
+f.close( )
+print(" txt 파일 저장 경로: %s" %f_name)  
