@@ -128,7 +128,7 @@ try:
     result['날짜'] = date2
     result['제목'] = title2
     result['내용'] = cont2
-    result['사이트'] = site2
+    result['사이트'] = link_list
 
     
     
