@@ -7,7 +7,7 @@ import os
 from openpyxl import Workbook
 
 # 사용자 입력 받기
-api_key = input("YouTube API 키를 입력하세요: ") ##API키는 AIzaSyCd9C4bDF6gJCV2utInt-JsSnolbdwhs9M 입니다.
+api_key = input("YouTube API 키를 입력하세요: ") ##API키는 본인의 API키를 입력하시면 됩니다
 keyword = input("검색할 키워드를 입력하세요: ")
 video_count = int(input("조회할 영상 수를 입력하세요: "))
 comment_count = int(input("각 영상에서 가져올 댓글 수를 입력하세요: "))
